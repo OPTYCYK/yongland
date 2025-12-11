@@ -12,6 +12,10 @@ import Phaser from 'phaser';
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super('GameScene');
+        
+        // Constants for collision detection
+        this.STOMP_TOLERANCE_MINI = 15; // Pixels of tolerance for mini fraud head stomps
+        this.STOMP_TOLERANCE_GIANT = 20; // Pixels of tolerance for giant fraud head stomps
     }
 
     create() {
@@ -257,7 +261,7 @@ export default class GameScene extends Phaser.Scene {
         miniFraud.setDisplaySize(20, 28);
         
         // Mini Frauds are slower than Bert
-        miniFraud.speed = 80; // Slower than player's 150
+        miniFraud.speed = 80; // Slower than player's 200
         miniFraud.direction = Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
         miniFraud.jumpForce = -600; // Jump much higher than Bert (-350)
         miniFraud.avoidRange = 150; // Distance to avoid player
@@ -481,7 +485,7 @@ export default class GameScene extends Phaser.Scene {
         // Account for player's body height (about 50px) and fraud's height (about 25px)
         const playerBottom = player.y + (player.displayHeight / 2);
         const fraudTop = fraud.y - (fraud.displayHeight / 2);
-        const isStomping = player.body.velocity.y > 0 && playerBottom < fraudTop + 15;
+        const isStomping = player.body.velocity.y > 0 && playerBottom < fraudTop + this.STOMP_TOLERANCE_MINI;
         
         if (isStomping) {
             // Head stomp - kill mini fraud
@@ -514,7 +518,7 @@ export default class GameScene extends Phaser.Scene {
         // Account for player's body height (about 50px) and giant fraud's height (about 100px)
         const playerBottom = player.y + (player.displayHeight / 2);
         const giantTop = giantFraud.y - (giantFraud.displayHeight / 2);
-        const isStomping = player.body.velocity.y > 0 && playerBottom < giantTop + 20;
+        const isStomping = player.body.velocity.y > 0 && playerBottom < giantTop + this.STOMP_TOLERANCE_GIANT;
         
         if (isStomping) {
             // Head stomp on giant fraud

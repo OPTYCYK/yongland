@@ -52,15 +52,11 @@ const game = new Phaser.Game(config);
 
 // Handle window events
 window.addEventListener('focus', () => {
-    if (game.isPaused) {
-        game.resume();
-    }
+    game.scene.resume();
 });
 
 window.addEventListener('blur', () => {
-    if (!game.isPaused) {
-        game.pause();
-    }
+    game.scene.pause();
 });
 
 // Export for potential external use
