@@ -11,28 +11,41 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
+            width: 100%;
+            height:  100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: #222;
+            background:  #222;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
         #game-container {
             width: 100%;
             height: 100%;
         }
+
+        canvas {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div id="game-container"></div>
 
-    <!-- Phaser 3 Library -->
+    <!-- Load Phaser 3 first -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
-
-    <!-- Game Script -->
+    
+    <!-- Then load your game code -->
     <script src="js/game.js"></script>
+
+    <script>
+        // Ensure game initializes after everything loads
+        window.addEventListener('load', function() {
+            console.log('YONGLAND loaded successfully! ');
+        });
+    </script>
 </body>
 </html>
