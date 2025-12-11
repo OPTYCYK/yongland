@@ -1,0 +1,57 @@
+# Node.js
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.eslintcache
+.node_repl_history
+*.tgz
+*.tar.gz
+.yarn-integrity
+dist/
+build/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.AppleDouble
+.LSOverride
+*.sublime-project
+*.sublime-workspace
+.netbeans
+.project
+.pydevproject
+.settings/
+*.launch
+.c9/
+*.cover
+.hypothesis/
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+.vagrant/
+.vagrant
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Package manager lock files (optional - uncomment if needed)
+# package-lock.json
+# yarn.lock
