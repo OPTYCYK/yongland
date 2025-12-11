@@ -334,9 +334,10 @@ export default class GameScene extends Phaser.Scene {
 
     createUI() {
         const width = this.cameras.main.width;
+        const height = this.cameras.main.height;
         
         // Lives
-        this.livesText = this.add.text(20, height - 680, 'Lives: ❤❤❤❤❤', {
+        this.livesText = this.add.text(20, 180, 'Lives: ❤❤❤❤❤', {
             font: 'bold 20px courier',
             fill: '#FF0000',
             backgroundColor: '#000000',
@@ -344,7 +345,7 @@ export default class GameScene extends Phaser.Scene {
         }).setScrollFactor(0).setDepth(100);
         
         // Mini Frauds counter
-        this.fraudsText = this.add.text(20, height - 650, 'Mini Frauds: 5/5', {
+        this.fraudsText = this.add.text(20, 210, 'Mini Frauds: 5/5', {
             font: 'bold 18px courier',
             fill: '#FFFF00',
             backgroundColor: '#000000',
@@ -352,7 +353,7 @@ export default class GameScene extends Phaser.Scene {
         }).setScrollFactor(0).setDepth(100);
         
         // Giant Fraud hits
-        this.giantText = this.add.text(20, height - 620, '', {
+        this.giantText = this.add.text(20, 240, '', {
             font: 'bold 18px courier',
             fill: '#FF6600',
             backgroundColor: '#000000',
