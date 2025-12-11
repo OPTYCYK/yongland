@@ -96,7 +96,7 @@ This will create an optimized production build in the `build/` or `dist/` direct
    Ensure your `package.json` includes the `homepage` field:
    ```json
    {
-     "homepage": "https://OPTYCYK.github.io/yongland"
+     "homepage": "https://optycyk.github.io/yongland"
    }
    ```
 
@@ -122,7 +122,7 @@ This will create an optimized production build in the `build/` or `dist/` direct
    ```
 
 5. **Verify Deployment**
-   Your game will be live at `https://OPTYCYK.github.io/yongland`
+   Your game will be live at `https://optycyk.github.io/yongland`
 
 ### Deploy to Vercel
 
