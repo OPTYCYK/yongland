@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YONGLAND - Game</title>
+    <title>YONGLAND - Bert Yong vs Fraud Yong</title>
     <style>
         * {
             margin: 0;
@@ -14,38 +14,443 @@
         html, body {
             width: 100%;
             height:  100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background:  #222;
+            background:  #000;
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
 
         #game-container {
             width: 100%;
-            height: 100%;
+            height:  100%;
         }
 
         canvas {
             display: block;
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
 <body>
     <div id="game-container"></div>
 
-    <!-- Load Phaser 3 first -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
     
-    <!-- Then load your game code -->
-    <script src="js/game.js"></script>
-
     <script>
-        // Ensure game initializes after everything loads
-        window.addEventListener('load', function() {
-            console.log('YONGLAND loaded successfully! ');
-        });
+        // Wait for Phaser to load before initializing game
+        function initGame() {
+            if (typeof Phaser === 'undefined') {
+                setTimeout(initGame, 100);
+                return;
+            }
+
+            // YONGLAND - Phaser 3 Game
+            const gameConfig = {
+                type:  Phaser.AUTO,
+                width: 1200,
+                height: 600,
+                parent: 'game-container',
+                backgroundColor: '#87ceeb',
+                physics: {
+                    default: 'arcade',
+                    arcade:  {
+                        gravity: { y: 300 },
+                        debug: false
+                    }
+                },
+                scene: [PreloadScene, MenuScene, GameScene, GameOverScene],
+                render: {
+                    pixelArt: true,
+                    antialias: false
+                }
+            };
+
+            const game = new Phaser. Game(gameConfig);
+
+            // PRELOAD SCENE
+            class PreloadScene extends Phaser. Scene {
+                constructor() {
+                    super('PreloadScene');
+                }
+
+                preload() {
+                    const width = this.cameras.main.width;
+                    const height = this.cameras.main.height;
+                    
+                    const loadingText = this.add.text(width / 2, height / 2, 'Loading YONGLAND...', {
+                        font: '32px courier',
+                        fill:  '#ffffff'
+                    });
+                    loadingText.setOrigin(0.5);
+                }
+
+                create() {
+                    this.scene.start('MenuScene');
+                }
+            }
+
+            // MENU SCENE
+            class MenuScene extends Phaser.Scene {
+                constructor() {
+                    super('MenuScene');
+                }
+
+                create() {
+                    const width = this. cameras.main.width;
+                    const height = this.cameras. main.height;
+
+                    this.cameras.main.setBackgroundColor('#1a1a2e');
+
+                    this.add.text(width / 2, 80, 'YONGLAND', {
+                        font: 'bold 72px courier',
+                        fill:  '#00ff00',
+                        stroke: '#000000',
+                        strokeThickness: 4
+                    }).setOrigin(0.5);
+
+                    this.add.text(width / 2, 160, 'Bert Yong vs Fraud Yong', {
+                        font: '28px courier',
+                        fill:  '#00ccff'
+                    }).setOrigin(0.5);
+
+                    this.add.text(width / 2, 250, 'Jump on enemies to defeat them!\nCollect the victory flag to win!\nManchester is Blue!! ', {
+                        font: '18px courier',
+                        fill:  '#ffffff',
+                        align: 'center'
+                    }).setOrigin(0.5);
+
+                    this.add.text(width / 2, 380, 'Arrow Keys or A/D - Move\nSpace or W - Jump', {
+                        font: '16px courier',
+                        fill: '#ffff00',
+                        align: 'center'
+                    }).setOrigin(0.5);
+
+                    const startBtn = this.add.text(width / 2, 500, 'PRESS SPACE TO START', {
+                        font: 'bold 24px courier',
+                        fill: '#00ff00',
+                        backgroundColor: '#000000',
+                        padding: { x: 20, y: 10 }
+                    }).setOrigin(0.5);
+
+                    this.tweens.add({
+                        targets: startBtn,
+                        alpha: { from: 1, to: 0.3 },
+                        duration: 600,
+                        repeat: -1,
+                        yoyo:  true
+                    });
+
+                    this.input.keyboard.on('keydown-SPACE', () => {
+                        this.scene.start('GameScene');
+                    });
+                }
+            }
+
+            // GAME SCENE
+            class GameScene extends Phaser.Scene {
+                constructor() {
+                    super('GameScene');
+                }
+
+                create() {
+                    const width = this.cameras.main. width;
+                    const height = this.cameras.main.height;
+
+                    this.cameras.main.setBackgroundColor('#87ceeb');
+
+                    this.lives = 3;
+                    this.score = 0;
+                    this.gameOver = false;
+
+                    this.platforms = this.physics.add.staticGroup();
+                    this.enemies = this.physics.add.group();
+                    this.coins = this.physics.add.group();
+
+                    this.createLevel();
+                    this.createPlayer();
+                    this.createEnemies();
+                    this. createCollectibles();
+                    this.createVictoryFlag();
+
+                    this.physics.add.collider(this.player, this. platforms);
+                    this.physics.add.collider(this. enemies, this.platforms);
+                    this.physics.add.overlap(this.player, this.enemies, this.handleEnemyCollision, null, this);
+                    this.physics.add. overlap(this.player, this. coins, this.handleCoinCollision, null, this);
+                    this.physics.add. overlap(this.player, this.victoryFlag, this.handleVictory, null, this);
+
+                    this.cursors = this.input.keyboard. createCursorKeys();
+                    this.wasdKeys = this.input.keyboard.addKeys('W,A,S,D');
+
+                    this.livesText = this.add.text(20, 20, 'Lives:  3', {
+                        font: '20px courier',
+                        fill:  '#ff0000'
+                    }).setScrollFactor(0);
+
+                    this.scoreText = this.add.text(20, 50, 'Score: 0', {
+                        font: '20px courier',
+                        fill:  '#ffff00'
+                    }).setScrollFactor(0);
+
+                    this.levelText = this.add.text(width / 2, 20, 'YONGLAND', {
+                        font: 'bold 20px courier',
+                        fill:  '#00ff00'
+                    }).setOrigin(0.5, 0).setScrollFactor(0);
+                }
+
+                createLevel() {
+                    const width = this.cameras.main. width;
+                    const height = this.cameras.main.height;
+
+                    const ground = this.platforms.create(width / 2, height - 20, null);
+                    ground.setScale(width / 10, 1).refreshBody();
+
+                    this.createPlatform(150, 500, 250, 20);
+                    this.createPlatform(500, 450, 250, 20);
+                    this.createPlatform(850, 400, 250, 20);
+                    this.createPlatform(250, 350, 200, 20);
+                    this.createPlatform(650, 300, 200, 20);
+                    this.createPlatform(1050, 250, 150, 20);
+                    this.createPlatform(400, 200, 150, 20);
+                    this.createPlatform(800, 150, 150, 20);
+                }
+
+                createPlatform(x, y, width, height) {
+                    const platform = this. platforms.create(x, y, null);
+                    platform.setScale(width / 10, height / 10);
+
+                    const graphics = this.make.graphics({ x: 0, y: 0, add: false });
+                    graphics.fillStyle(0x8b4513, 1);
+                    graphics.fillRect(0, 0, width, height);
+                    graphics.generateTexture('platform_' + x + '_' + y, width, height);
+                    graphics.destroy();
+
+                    platform.setDisplaySize(width, height);
+                    platform.setTexture('platform_' + x + '_' + y);
+                    platform.body.immovable = true;
+                }
+
+                createPlayer() {
+                    const graphics = this.make.graphics({ x: 0, y: 0, add: false });
+                    graphics.fillStyle(0xff6600, 1);
+                    graphics.fillRect(0, 0, 30, 40);
+                    graphics.fillStyle(0xffdbac, 1);
+                    graphics.fillCircle(15, 12, 10);
+                    graphics.fillStyle(0x000000, 1);
+                    graphics.fillCircle(11, 10, 2);
+                    graphics.fillCircle(19, 10, 2);
+                    graphics.generateTexture('player', 30, 41);
+                    graphics.destroy();
+
+                    this.player = this.physics.add.sprite(100, 400, 'player');
+                    this. player.setBounce(0);
+                    this.player.setCollideWorldBounds(true);
+                }
+
+                createEnemies() {
+                    this.createEnemy(700, 300, 'main');
+                    this.createEnemy(400, 380, 'secondary');
+                    this.createEnemy(1000, 350, 'secondary');
+                }
+
+                createEnemy(x, y, type) {
+                    const graphics = this.make.graphics({ x: 0, y: 0, add: false });
+                    graphics.fillStyle(0xff0000, 1);
+                    graphics.fillRect(0, 0, 30, 40);
+                    graphics.fillStyle(0xffdbac, 1);
+                    graphics.fillCircle(15, 12, 10);
+                    graphics.fillStyle(0x000000, 1);
+                    graphics.fillCircle(11, 10, 2);
+                    graphics.fillCircle(19, 10, 2);
+                    graphics.generateTexture('enemy_' + type, 30, 41);
+                    graphics.destroy();
+
+                    const enemy = this.enemies.create(x, y, 'enemy_' + type);
+                    enemy.setBounce(1);
+                    enemy.setCollideWorldBounds(true);
+                    enemy.setVelocityX(Phaser.Math.Between(-60, 60));
+                    enemy.type = type;
+                    enemy.speed = type === 'main' ? 80 : 60;
+                }
+
+                createCollectibles() {
+                    const positions = [
+                        { x:  300, y: 450 },
+                        { x:  600, y: 400 },
+                        { x:  900, y: 350 },
+                        { x: 400, y: 300 },
+                        { x:  800, y: 250 },
+                        { x: 500, y: 150 }
+                    ];
+
+                    positions.forEach(pos => {
+                        const graphics = this.make. graphics({ x: 0, y: 0, add: false });
+                        graphics.fillStyle(0xffff00, 1);
+                        graphics.fillCircle(8, 8, 8);
+                        graphics.generateTexture('coin', 16, 16);
+                        graphics.destroy();
+
+                        const coin = this.coins.create(pos.x, pos.y, 'coin');
+                        coin.setBounce(0.5);
+                    });
+                }
+
+                createVictoryFlag() {
+                    const graphics = this.make.graphics({ x: 0, y:  0, add: false });
+                    graphics.fillStyle(0x8b4513, 1);
+                    graphics.fillRect(0, 20, 8, 30);
+                    graphics.fillStyle(0x00ff00, 1);
+                    graphics.fillRect(8, 20, 30, 20);
+                    graphics.fillStyle(0xffff00, 1);
+                    graphics.fillCircle(23, 30, 4);
+                    graphics.generateTexture('victoryFlag', 40, 50);
+                    graphics.destroy();
+
+                    this.victoryFlag = this.physics.add.sprite(1100, 150, 'victoryFlag');
+                    this.victoryFlag. setBounce(0);
+                }
+
+                handleEnemyCollision() {
+                    this.lives--;
+                    this.livesText.setText('Lives: ' + this.lives);
+
+                    if (this.lives <= 0) {
+                        this.gameOver = true;
+                        this.scene.start('GameOverScene', { victory: false, score: this.score });
+                    } else {
+                        this.player.x = 100;
+                        this.player.y = 400;
+                        this.player.setVelocity(0, 0);
+                    }
+                }
+
+                handleCoinCollision(player, coin) {
+                    coin.destroy();
+                    this. score += 10;
+                    this.scoreText.setText('Score: ' + this.score);
+                }
+
+                handleVictory() {
+                    this.gameOver = true;
+                    this.score += 100;
+                    this.scene.start('GameOverScene', { victory: true, score: this. score });
+                }
+
+                update() {
+                    if (this.gameOver) return;
+
+                    const moveLeft = this.cursors.left. isDown || this.wasdKeys.A.isDown;
+                    const moveRight = this.cursors. right.isDown || this.wasdKeys.D.isDown;
+                    const jump = this.cursors.space.isDown || this.wasdKeys.W. isDown;
+
+                    if (moveLeft) {
+                        this.player.setVelocityX(-150);
+                    } else if (moveRight) {
+                        this.player.setVelocityX(150);
+                    } else {
+                        this.player.setVelocityX(0);
+                    }
+
+                    if (jump && this.player.body.touching. down) {
+                        this. player.setVelocityY(-300);
+                    }
+
+                    if (this.player.y > 650) {
+                        this.handleEnemyCollision();
+                    }
+
+                    this.enemies.children.entries.forEach(enemy => {
+                        if (enemy.body.touching.left || enemy.body.touching.right) {
+                            enemy.setVelocityX(-enemy.body.velocity.x);
+                        }
+                    });
+                }
+            }
+
+            // GAME OVER SCENE
+            class GameOverScene extends Phaser.Scene {
+                constructor() {
+                    super('GameOverScene');
+                }
+
+                init(data) {
+                    this. victory = data.victory;
+                    this.score = data.score;
+                }
+
+                create() {
+                    const width = this.cameras.main. width;
+                    const height = this.cameras.main.height;
+
+                    if (this.victory) {
+                        this.cameras.main.setBackgroundColor('#1a4d2e');
+                    } else {
+                        this. cameras.main.setBackgroundColor('#4d1a1a');
+                    }
+
+                    if (this.victory) {
+                        this.add.text(width / 2, 100, 'VICTORY!', {
+                            font: 'bold 80px courier',
+                            fill:  '#00ff00',
+                            stroke: '#000000',
+                            strokeThickness: 4
+                        }).setOrigin(0.5);
+
+                        this.add.text(width / 2, 220, 'Bert Yong Forever! !\nManchester is Blue!!', {
+                            font: 'bold 32px courier',
+                            fill:  '#00ccff',
+                            stroke: '#000000',
+                            strokeThickness: 3,
+                            align: 'center'
+                        }).setOrigin(0.5);
+                    } else {
+                        this. add.text(width / 2, 100, 'GAME OVER', {
+                            font: 'bold 80px courier',
+                            fill: '#ff0000',
+                            stroke:  '#000000',
+                            strokeThickness: 4
+                        }).setOrigin(0.5);
+
+                        this.add. text(width / 2, 220, 'Caught by Fraud Yong!', {
+                            font: 'bold 32px courier',
+                            fill: '#ff6600'
+                        }).setOrigin(0.5);
+
+                        this.add.text(width / 2, 300, 'But Bert Yong Forever!\nManchester is Blue!!', {
+                            font: 'bold 24px courier',
+                            fill: '#00ccff',
+                            align: 'center'
+                        }).setOrigin(0.5);
+                    }
+
+                    this.add.text(width / 2, 450, 'Final Score: ' + this.score, {
+                        font: 'bold 24px courier',
+                        fill: '#ffffff'
+                    }).setOrigin(0.5);
+
+                    const restartText = this.add. text(width / 2, 520, 'PRESS SPACE TO RETURN TO MENU', {
+                        font: 'bold 20px courier',
+                        fill: '#00ff00',
+                        backgroundColor: '#000000',
+                        padding: { x: 20, y: 10 }
+                    }).setOrigin(0.5);
+
+                    this.tweens.add({
+                        targets: restartText,
+                        alpha: { from: 1, to: 0.3 },
+                        duration: 600,
+                        repeat: -1,
+                        yoyo: true
+                    });
+
+                    this.input. keyboard.on('keydown-SPACE', () => {
+                        this.scene.start('MenuScene');
+                    });
+                }
+            }
+        }
+
+        // Start game when page loads
+        window.addEventListener('load', initGame);
     </script>
 </body>
 </html>
