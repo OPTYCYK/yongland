@@ -2,9 +2,11 @@
 // Bert Yong vs Fraud Yong - Complete Game Implementation
 
 const gameConfig = {
-    type: Phaser.AUTO,
+    type:  Phaser.AUTO,
     width: 1200,
     height: 600,
+    parent: 'game-container',  // ✅ ADD THIS LINE
+    backgroundColor: '#87ceeb',  // ✅ ADD THIS LINE
     physics: {
         default: 'arcade',
         arcade: {
