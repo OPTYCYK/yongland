@@ -259,7 +259,7 @@ export default class GameScene extends Phaser.Scene {
         // Mini Frauds are slower than Bert
         miniFraud.speed = 80; // Slower than player's 150
         miniFraud.direction = Phaser.Math.Between(-1, 1) > 0 ? 1 : -1;
-        miniFraud.jumpForce = -400; // Jump 2x higher than Bert (-300)
+        miniFraud.jumpForce = -600; // Jump much higher than Bert (-350)
         miniFraud.avoidRange = 150; // Distance to avoid player
         
         this.miniFrauds.add(miniFraud);
@@ -478,7 +478,10 @@ export default class GameScene extends Phaser.Scene {
         if (!fraud.active || this.isInvulnerable) return;
         
         // Check if player is stomping (falling down and above enemy)
-        const isStomping = player.body.velocity.y > 0 && player.y < fraud.y - 10;
+        // Account for player's body height (about 50px) and fraud's height (about 25px)
+        const playerBottom = player.y + (player.displayHeight / 2);
+        const fraudTop = fraud.y - (fraud.displayHeight / 2);
+        const isStomping = player.body.velocity.y > 0 && playerBottom < fraudTop + 15;
         
         if (isStomping) {
             // Head stomp - kill mini fraud
@@ -508,7 +511,10 @@ export default class GameScene extends Phaser.Scene {
         if (!giantFraud.active || this.isInvulnerable) return;
         
         // Check if player is stomping
-        const isStomping = player.body.velocity.y > 0 && player.y < giantFraud.y - 40;
+        // Account for player's body height (about 50px) and giant fraud's height (about 100px)
+        const playerBottom = player.y + (player.displayHeight / 2);
+        const giantTop = giantFraud.y - (giantFraud.displayHeight / 2);
+        const isStomping = player.body.velocity.y > 0 && playerBottom < giantTop + 20;
         
         if (isStomping) {
             // Head stomp on giant fraud
