@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { InjectManifest } = require('workbox-webpack-plugin');
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === 'production';
@@ -46,10 +45,6 @@ module.exports = (env, argv) => {
               plugins: [],
             },
           },
-        },
-        {
-          test: /\.css$/i,
-          use: ['style-loader', 'css-loader'],
         },
         {
           test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -102,13 +97,6 @@ module.exports = (env, argv) => {
           minifyURLs: true,
         } : false,
       }),
-      ...(isProduction ? [
-        new InjectManifest({
-          swSrc: './src/service-worker.js',
-          swDest: 'service-worker.js',
-          exclude: [/\.map$/, /hot-update/],
-        }),
-      ] : []),
     ],
     resolve: {
       extensions: ['.js', '.json'],

@@ -1,287 +1,246 @@
 # YONGLAND
 
-Welcome to YONGLAND! This is an engaging game project that combines fun gameplay with easy deployment options.
+**Bert Yong vs Fraud Yong** - A browser-based platformer game built with Phaser 3, set in Etihad Stadium, Manchester.
 
-## Table of Contents
+![YONGLAND Menu](https://github.com/user-attachments/assets/312a2ae3-0836-42f4-8173-8427caa51827)
 
-- [About YONGLAND](#about-yongland)
-- [How to Play](#how-to-play)
-- [Installation](#installation)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [License](#license)
+## 🎮 Game Overview
 
----
+Help Bert Yong defeat the Fraud Yongs at Etihad Stadium! Jump on the heads of 5 Mini Frauds, then take down the Giant Fraud boss to prove **Manchester is Blue!!**
 
-## About YONGLAND
+### Game Features
 
-YONGLAND is an interactive game designed to provide an enjoyable gaming experience. Whether you're a casual player or a dedicated enthusiast, YONGLAND offers engaging gameplay with intuitive mechanics.
+- **Bert Yong (Protagonist)**: 8-bit pixel art character in Man City blue suit
+- **5 Lives System**: Respawn without resetting enemy progress
+- **5 Mini Frauds**: Half Bert's size, avoid the player, jump 2x higher
+- **Giant Fraud Boss**: Twice Bert's size, requires 3 head stomps to defeat
+- **Head Stomp Mechanics**: Jump on enemy heads to defeat them; body contact kills Bert
+- **Etihad Stadium Theme**: Man City fans, banners, and football-inspired platforms
 
----
+### Controls
 
-## How to Play
-
-### Getting Started
-
-1. **Launch the Game**: Start YONGLAND on your preferred platform
-2. **Understand the Objectives**: Familiarize yourself with the game's main goals and mechanics
-3. **Navigate the Game World**: Use the controls to explore and interact with the game environment
-
-### Basic Controls
-
-- **Movement**: Use arrow keys or WASD keys to navigate
-- **Action**: Press SPACE or Enter to perform actions
-- **Menu**: Press ESC to access the pause menu
-
-### Game Mechanics
-
-- **Progression**: Complete levels and challenges to advance through the game
-- **Scoring**: Earn points for completing objectives and collecting items
-- **Power-ups**: Discover and use power-ups to enhance your gameplay
-- **Challenges**: Face increasingly difficult challenges as you progress
-
-### Tips for Success
-
-- Explore all areas to find hidden items and bonuses
-- Pay attention to the game tutorial for helpful hints
-- Practice controls to improve your skills
-- Try different strategies to find what works best for you
+- **Arrow Keys** or **A/D** - Move Left/Right
+- **Space** or **W** - Jump
 
 ---
 
-## Installation
+## 🚀 Quick Start
 
 ### Prerequisites
 
 - Node.js (v14.0.0 or higher)
 - npm (v6.0.0 or higher)
-- Git
 
-### Local Setup
+### Installation
 
-1. **Clone the Repository**
+1. **Clone the repository**
    ```bash
    git clone https://github.com/OPTYCYK/yongland.git
    cd yongland
    ```
 
-2. **Install Dependencies**
+2. **Install dependencies**
    ```bash
    npm install
    ```
 
-3. **Start the Development Server**
+3. **Run development server**
    ```bash
    npm start
    ```
+   Open your browser to `http://localhost:8080`
 
-4. **Access the Game**
-   Open your browser and navigate to `http://localhost:3000`
-
-### Building for Production
-
-```bash
-npm run build
-```
-
-This will create an optimized production build in the `build/` or `dist/` directory.
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+   Production files will be in the `dist/` directory
 
 ---
 
-## Deployment
+## 📁 Project Structure
+
+```
+yongland/
+├── public/
+│   └── index.html          # HTML template
+├── src/
+│   ├── index.js            # Main game entry point
+│   └── scenes/
+│       ├── PreloadScene.js # Asset loading
+│       ├── MenuScene.js    # Main menu
+│       ├── GameScene.js    # Core gameplay
+│       └── GameOverScene.js # Victory/defeat screens
+├── dist/                   # Build output (generated)
+├── webpack.config.js       # Webpack configuration
+├── package.json            # Dependencies and scripts
+└── manifest.json           # PWA manifest
+
+Legacy files (from previous implementation):
+├── index.html              # Standalone version (backup)
+└── js/game.js              # Old game code (reference)
+```
+
+---
+
+## 🎯 Game Mechanics
+
+### Bert Yong (Player)
+- **Movement Speed**: 200 units/second
+- **Jump Force**: -350
+- **Lives**: 5 (respawn at starting position)
+- **Size**: 40x57 pixels
+
+### Mini Frauds (Enemies)
+- **Movement Speed**: 80 units/second (slower than Bert)
+- **Jump Force**: -600 (jumps ~2x higher than Bert)
+- **AI Behavior**: Avoids player within 150px range
+- **Size**: 20x28 pixels (half of Bert)
+- **Count**: 5 total
+
+### Giant Fraud (Boss)
+- **Movement Speed**: 120 units/second
+- **AI Behavior**: Aggressively chases player
+- **Size**: 80x114 pixels (2x Bert's size)
+- **Defeat Condition**: 3 head stomps required
+- **Appears**: After all Mini Frauds are defeated
+
+### Collision Detection
+- **Head Stomp**: Player must be falling (velocity.y > 0) and land on top of enemy
+- **Body Contact**: Any other collision results in losing a life
+- **Invulnerability**: Brief invulnerability after respawn (flashing animation)
+
+---
+
+## 🌐 Deployment
 
 ### Deploy to GitHub Pages
 
-1. **Update package.json**
-   Ensure your `package.json` includes the `homepage` field:
+1. Add to `package.json`:
    ```json
-   {
-     "homepage": "https://OPTYCYK.github.io/yongland"
-   }
+   "homepage": "https://OPTYCYK.github.io/yongland"
    ```
 
-2. **Install GitHub Pages Package**
+2. Install gh-pages:
    ```bash
    npm install --save-dev gh-pages
    ```
 
-3. **Add Deploy Scripts**
-   Add these scripts to your `package.json`:
+3. Add deploy scripts:
    ```json
-   {
-     "scripts": {
-       "predeploy": "npm run build",
-       "deploy": "gh-pages -d build"
-     }
-   }
+   "predeploy": "npm run build",
+   "deploy": "gh-pages -d dist"
    ```
 
-4. **Deploy**
+4. Deploy:
    ```bash
    npm run deploy
    ```
 
-5. **Verify Deployment**
-   Your game will be live at `https://OPTYCYK.github.io/yongland`
-
-### Deploy to Vercel
-
-1. **Install Vercel CLI**
-   ```bash
-   npm install -g vercel
-   ```
-
-2. **Deploy**
-   ```bash
-   vercel
-   ```
-
-3. **Follow the Prompts**
-   - Authenticate with your Vercel account
-   - Select your project directory
-   - Complete the deployment setup
-
 ### Deploy to Netlify
 
-1. **Install Netlify CLI**
-   ```bash
-   npm install -g netlify-cli
-   ```
-
-2. **Build the Project**
+1. Build the project:
    ```bash
    npm run build
    ```
 
-3. **Deploy**
+2. Deploy the `dist/` folder through Netlify CLI or web interface
+
+### Deploy to Vercel
+
+1. Install Vercel CLI:
    ```bash
-   netlify deploy --prod --dir=build
+   npm install -g vercel
    ```
 
-### Docker Deployment
-
-1. **Create a Dockerfile** (if not present)
-   ```dockerfile
-   FROM node:16-alpine
-   WORKDIR /app
-   COPY package*.json ./
-   RUN npm install
-   COPY . .
-   RUN npm run build
-   EXPOSE 3000
-   CMD ["npm", "start"]
-   ```
-
-2. **Build Docker Image**
+2. Deploy:
    ```bash
-   docker build -t yongland .
-   ```
-
-3. **Run Container**
-   ```bash
-   docker run -p 3000:3000 yongland
+   vercel
    ```
 
 ---
 
-## Environment Variables
+## 🛠️ Development
 
-Create a `.env` file in the root directory for configuration:
+### NPM Scripts
 
-```
-REACT_APP_API_URL=https://api.example.com
-REACT_APP_VERSION=1.0.0
-```
+- `npm start` - Start development server (port 8080)
+- `npm run build` - Build for production
+- `npm run dev` - Build in development mode with watch
 
----
+### Code Structure
 
-## Project Structure
+The game uses a modular scene-based architecture:
 
-```
-yongland/
-├── public/              # Static files
-├── src/
-│   ├── components/      # React components
-│   ├── pages/          # Page components
-│   ├── styles/         # CSS/SCSS files
-│   ├── utils/          # Utility functions
-│   └── App.js          # Main application component
-├── package.json        # Project dependencies
-├── README.md           # This file
-└── .gitignore         # Git ignore rules
-```
+1. **PreloadScene**: Loads game assets and shows loading screen
+2. **MenuScene**: Main menu with game title and instructions
+3. **GameScene**: Core gameplay with player, enemies, and platforms
+4. **GameOverScene**: Victory or defeat screen with restart option
+
+### Key Configuration
+
+- **Game Dimensions**: 1200x700 pixels
+- **Physics**: Arcade physics with 400 gravity
+- **Render Mode**: WebGL with pixel art rendering
+- **Scaling**: FIT mode with auto-centering
 
 ---
 
-## Contributing
+## 🎨 Theme & Visuals
 
-We welcome contributions! Please follow these steps:
+### Manchester City Colors
+- **Primary Blue**: #6CABDD (Man City blue)
+- **Dark Blue**: #1C2C5B (Navy)
+- **White**: #FFFFFF (Platforms, text)
+- **Green**: #228B22 (Grass)
 
-1. **Fork the Repository**
-2. **Create a Feature Branch**
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. **Commit Your Changes**
-   ```bash
-   git commit -m "Add your commit message"
-   ```
-4. **Push to Your Fork**
-   ```bash
-   git push origin feature/your-feature-name
-   ```
-5. **Open a Pull Request**
+### Stadium Elements
+- Cheering fans represented as animated white dots
+- "BERT YONG" and "ETIHAD STADIUM" banners
+- Fan sections in Man City blue
+- White platforms inspired by football goalposts
+- Green grass ground
 
 ---
 
-## Troubleshooting
+## 🏆 Victory Condition
 
-### Common Issues
+Defeat all 5 Mini Frauds, then defeat the Giant Fraud by stomping on its head 3 times.
 
-**Port 3000 is already in use**
-```bash
-# Use a different port
-PORT=3001 npm start
-```
-
-**Dependencies not installing**
-```bash
-# Clear npm cache and reinstall
-npm cache clean --force
-rm -rf node_modules package-lock.json
-npm install
-```
-
-**Build fails**
-```bash
-# Check Node version
-node --version
-
-# Update npm
-npm install -g npm@latest
-```
+**Victory Message**: "Bert Yong Forever!! Manchester is Blue!!"
 
 ---
 
-## License
+## 📝 Version History
+
+- **v1.0.0** - Complete game implementation
+  - Bert Yong character with 5 lives
+  - 5 Mini Frauds with avoidance AI
+  - Giant Fraud boss battle
+  - Etihad Stadium theme
+  - Head stomp mechanics
+  - Full game cycle (menu → gameplay → victory/defeat)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-## Support
+## 🙏 Acknowledgments
 
-For issues, questions, or suggestions, please:
-- Open an issue on GitHub
-- Contact the development team
-- Check existing documentation and FAQs
-
----
-
-## Version History
-
-- **v1.0.0** - Initial release
+- Built with [Phaser 3](https://phaser.io/)
+- Inspired by classic platformer games
+- Dedicated to all Manchester City fans
 
 ---
 
-**Enjoy YONGLAND! Happy gaming! 🎮**
+**Manchester is Blue!! 💙**
